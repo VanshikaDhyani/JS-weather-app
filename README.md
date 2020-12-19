@@ -1,4 +1,5 @@
-#Vanshika's Weather Application
+# Vanshika's Weather Application
+
 A reactive [Vue](https://vuejs.org/) application to get weather details for the next 5 days using a 3rd party web API.
 
 Features:
@@ -6,11 +7,11 @@ Features:
 * Indicates whether the user should pack for Cold (temp range -10..+10), Warm (+10-+20) or Hot (20+)
 * Gives a summary table for the next 5 days showing: Temperature, Wind Speed and Rainfall level
 
-###Front-End:
+### Front-End:
 * HTML5
-###Back-End:
+### Back-End:
 * JavaScript
 * node.js (npm)
-###Misc (utilities/dependencies):
+### Misc (utilities/dependencies):
 * Nodemon (Automatically restarts application on changes to source)
 * Axios (For API calls to => [openweathermap](openweathermap.org) <=)
