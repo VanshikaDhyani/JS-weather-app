@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 7px 40px;
+        }
+    </style>
+    <title>Vanshika's Weather App</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <div id="user-input">
+        <h1>Vanshika's Weather Application</h1>
+            <input v-model="cityName" placeholder=" Enter city name">
+        <button v-on:click="getWeatherAPI">Get weather Data</button>
+        <p v-if="rain === 1">Rain: Bring an umbrella, it might rain</p>
+        <p v-if="tempRangePacking">Packing: pack for {{tempRangePacking}} climate</p>
+
+        <table v-if="tablevalues!==false">
+            <caption>Summary Table for 5 Days</caption>
+            <caption>-------------------------------------</caption>
+            <tr>
+                <td>Date</td>
+                <td>Average Temperature (Celsius)</td>
+                <td>Minimum Temperature (Celsius)</td>
+                <td>Maximum Temperature (Celsius)</td>
+                <td>Average Wind Speed (m/s)</td>
+                <td v-if="rain === 1">Total Rain Fall (mm)</td>
+            </tr>
+            <tr>
+                <td>{{list[0].date}}</td>
+                <td>{{list[0].avgTemp}}</td>
+                <td>{{list[0].minTemp}}</td>
+                <td>{{list[0].maxTemp}}</td>
+                <td>{{list[0].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[0].avgRainfallLevel}}</td>
+            </tr>
+
+            <tr>
+                <td>{{list[1].date}}</td>
+                <td>{{list[1].avgTemp}}</td>
+                <td>{{list[1].minTemp}}</td>
+                <td>{{list[1].maxTemp}}</td>
+                <td>{{list[1].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[1].avgRainfallLevel}}</td>
+            </tr>
+
+            <tr>
+                <td>{{list[2].date}}</td>
+                <td>{{list[2].avgTemp}}</td>
+                <td>{{list[2].minTemp}}</td>
+                <td>{{list[2].maxTemp}}</td>
+                <td>{{list[2].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[2].avgRainfallLevel}}</td>
+            </tr>
+
+            <tr>
+                <td>{{list[3].date}}</td>
+                <td>{{list[3].avgTemp}}</td>
+                <td>{{list[3].minTemp}}</td>
+                <td>{{list[3].maxTemp}}</td>
+                <td>{{list[3].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[3].avgRainfallLevel}}</td>
+            </tr>
+
+            <tr>
+                <td>{{list[4].date}}</td>
+                <td>{{list[4].avgTemp}}</td>
+                <td>{{list[4].minTemp}}</td>
+                <td>{{list[4].maxTemp}}</td>
+                <td>{{list[4].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[4].avgRainfallLevel}}</td>
+            </tr>
+
+            <tr>
+                <td>{{list[5].date}}</td>
+                <td>{{list[5].avgTemp}}</td>
+                <td>{{list[5].minTemp}}</td>
+                <td>{{list[5].maxTemp}}</td>
+                <td>{{list[5].avgWindSpeed}}</td>
+                <td v-if="rain === 1">{{list[5].avgRainfallLevel}}</td>
+            </tr>
+
+
+        </table>
+
+    </div>
+
+    <script>
+        var userInput = new Vue({
+            el: '#user-input',
+            data: {
+                cityName: "",
+                rain: -1,
+                list:[],
+                tempRangePacking: "",
+                temperature: "",
+                tempMin: 0,
+                tempMax: 0,
+                windSpeed: 0,
+                rainfallLevel: 0,
+                tablevalues:false
+            },
+            methods: {
+                getWeatherAPI: function () {
+                    fetch(`http://localhost:3000/${this.cityName}`)
+                        .then(response => {
+                                if (response.status !== 200) {
+                                    console.log('Looks like there was a problem. Status Code: ' +
+                                        response.status);
+                                    return;
+                                }
+
+                                response.json().then(data => {
+
+                                    this.cityName = data.city;
+
+                                    this.list=data.dataList;
+                                    this.rain = -1;
+
+                                    for (let i = 0; i < data.dataList.length; i++) {
+                                        if (data.dataList[i].avgRainfallLevel && data.dataList[i].avgRainfallLevel > 0) {
+                                            this.rain = 1;
+                                        }
+                                    }
+
+                                    let maxTempOfFiveDays = data.dataList[0].maxTemp;
+
+                                    for (let i = 0; i < data.dataList.length; i++) {
+                                        if (data.dataList[i].maxTemp > maxTempOfFiveDays) {
+                                            maxTempOfFiveDays = data.dataList[i].maxTemp;
+                                        }
+                                    }
+
+                                    this.tempRangePacking = (maxTempOfFiveDays <= 10)? "cold" :
+                                        (maxTempOfFiveDays <= 20)? "warm" : "hot";
+                                    this.tablevalues=true;
+                                });
+                            }
+                        )
+                        .catch(function(err) {
+                            console.log('Fetch Error :-S', err);
+                        });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
